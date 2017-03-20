@@ -33,13 +33,14 @@ function postToTwitter(str, cb) {
             });
         }
     });
-}
+};
+var FB = require('fb'),
+    fb = new FB.Facebook();
+var fbAccessToken = request.fbtoken;
 
 // server html
 var server = express();
 
-//server.use('/public', express.static(__dirname + '/log_messages'));
-//server.use(express.static(__dirname + '/log_messages'));
 server.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -87,6 +88,17 @@ server.post('/post.html', function (request, response) {
     });
 
     //Slack message
+    
+    //Facebook
+    FB.setAccessToken(fbAccessToken);
+
+FB.api('me/feed', 'post', { message: message }, function (res) {
+  if(!res || res.error) {
+    console.log(!res ? 'error occurred' : res.error);
+    return;
+  }
+  console.log('Post to Facebook to id:' + res.id);
+});
 
 
     response.sendFile(__dirname + '/messages_sent.html');
