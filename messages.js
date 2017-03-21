@@ -1,7 +1,9 @@
+var request = require('./vars.js');
 const express = require('express');
 const bodyParser = require("body-parser");
 const fs = require('fs');
-var request = require('./vars.js');
+const Slack = require('slack-node');
+webhookUri = request.slackWebhook;
 const nodemailer = require('nodemailer');
 var user = request.user;
 let transporter = nodemailer.createTransport({
@@ -36,10 +38,10 @@ function postToTwitter(str, cb) {
 };
 var FB = require('fb'),
     fb = new FB.Facebook();
-var fbAccessToken = request.fbtoken;
+var fbAccessToken = request.fbToken;
 
 // server html
-var server = express();
+const server = express();
 
 server.use(bodyParser.urlencoded({
     extended: true
@@ -88,17 +90,30 @@ server.post('/post.html', function (request, response) {
     });
 
     //Slack message
-    
-    //Facebook
+
+    slack = new Slack();
+    slack.setWebhook(webhookUri);
+
+    slack.webhook({
+        channel: "#test_web",
+        username: "bruno",
+        text: message
+    }, function (err, response) {
+        console.log("Status envoi message Slack = " + response);
+    });
+
+    //Facebook message
     FB.setAccessToken(fbAccessToken);
 
-FB.api('me/feed', 'post', { message: message }, function (res) {
-  if(!res || res.error) {
-    console.log(!res ? 'error occurred' : res.error);
-    return;
-  }
-  console.log('Post to Facebook to id:' + res.id);
-});
+    FB.api('me/feed', 'post', {
+        message: message
+    }, function (res) {
+        if (!res || res.error) {
+            console.log(!res ? 'error occurred' : res.error);
+            return;
+        }
+        console.log('Post to Facebook to id:' + res.id);
+    });
 
 
     response.sendFile(__dirname + '/messages_sent.html');
