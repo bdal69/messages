@@ -42,6 +42,7 @@ var fbAccessToken = request.fbToken;
 
 // server html
 const server = express();
+server.use(express.static('site'));
 
 server.use(bodyParser.urlencoded({
     extended: true
@@ -50,7 +51,7 @@ server.use(bodyParser.urlencoded({
 server.listen(8080);
 
 server.get('/messages.html', function (request, response) {
-    response.sendFile(__dirname + '/messages.html');
+    response.sendFile('messages.html');
 });
 
 server.post('/post.html', function (request, response) {
@@ -116,9 +117,9 @@ server.post('/post.html', function (request, response) {
     });
 
 
-    response.sendFile(__dirname + '/messages_sent.html');
+    response.sendFile(__dirname + '/site/sent.html');
 });
 
 server.use(function (req, res, next) {
-    res.redirect('/messages.html');
+    res.redirect('messages.html');
 });
