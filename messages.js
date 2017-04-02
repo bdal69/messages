@@ -54,7 +54,7 @@ server.listen(8080);
 server.get('/messages.html', function (request, response) {
     response.sendFile('messages.html');
 });
-// extraction of the message from the client "post" 
+// extract of the message from the client "post" 
 server.post('/post.html', function (request, response) {
     var message = request.body.message;
     var date = new Date();
