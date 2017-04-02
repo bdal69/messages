@@ -47,13 +47,14 @@ server.use(express.static('site'));
 server.use(bodyParser.urlencoded({
     extended: true
 }));
-
+// starting of the server
 server.listen(8080);
 
+// default page
 server.get('/messages.html', function (request, response) {
     response.sendFile('messages.html');
 });
-
+// extraction of the message from the client "post" 
 server.post('/post.html', function (request, response) {
     var message = request.body.message;
     var date = new Date();
@@ -116,10 +117,10 @@ server.post('/post.html', function (request, response) {
         console.log('Post to Facebook to id:' + res.id);
     });
 
-
+// response page
     response.sendFile(__dirname + '/site/sent.html');
 });
-
+// default forwarding for invalid addresses
 server.use(function (req, res, next) {
     res.redirect('messages.html');
 });
